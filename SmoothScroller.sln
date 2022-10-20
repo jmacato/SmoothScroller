@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothScroller.Android", "SmoothScroller\SmoothScroller.Android\SmoothScroller.Android.csproj", "{EFB831A8-0D44-40D9-9486-08E92D3F0B97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothScroller.Desktop", "SmoothScroller\SmoothScroller.Desktop\SmoothScroller.Desktop.csproj", "{4B19AFAE-C7A7-4C81-98BE-3F2FECC466EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothScroller.iOS", "SmoothScroller\SmoothScroller.iOS\SmoothScroller.iOS.csproj", "{5C4ADF4D-69B2-48FE-AD45-D42985C828B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothScroller.Web", "SmoothScroller\SmoothScroller.Web\SmoothScroller.Web.csproj", "{098390A1-87C8-4ADB-9214-75BFF32FEAC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothScroller", "SmoothScroller\SmoothScroller\SmoothScroller.csproj", "{42258167-1E4F-4EBE-BBB9-8504EC93895A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFB831A8-0D44-40D9-9486-08E92D3F0B97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB831A8-0D44-40D9-9486-08E92D3F0B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB831A8-0D44-40D9-9486-08E92D3F0B97}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{EFB831A8-0D44-40D9-9486-08E92D3F0B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB831A8-0D44-40D9-9486-08E92D3F0B97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFB831A8-0D44-40D9-9486-08E92D3F0B97}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{4B19AFAE-C7A7-4C81-98BE-3F2FECC466EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B19AFAE-C7A7-4C81-98BE-3F2FECC466EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B19AFAE-C7A7-4C81-98BE-3F2FECC466EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B19AFAE-C7A7-4C81-98BE-3F2FECC466EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C4ADF4D-69B2-48FE-AD45-D42985C828B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C4ADF4D-69B2-48FE-AD45-D42985C828B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C4ADF4D-69B2-48FE-AD45-D42985C828B2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5C4ADF4D-69B2-48FE-AD45-D42985C828B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C4ADF4D-69B2-48FE-AD45-D42985C828B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C4ADF4D-69B2-48FE-AD45-D42985C828B2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{098390A1-87C8-4ADB-9214-75BFF32FEAC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{098390A1-87C8-4ADB-9214-75BFF32FEAC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{098390A1-87C8-4ADB-9214-75BFF32FEAC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{098390A1-87C8-4ADB-9214-75BFF32FEAC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42258167-1E4F-4EBE-BBB9-8504EC93895A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42258167-1E4F-4EBE-BBB9-8504EC93895A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42258167-1E4F-4EBE-BBB9-8504EC93895A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42258167-1E4F-4EBE-BBB9-8504EC93895A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

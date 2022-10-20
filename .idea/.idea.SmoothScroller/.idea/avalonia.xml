@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="SmoothScroller/SmoothScroller/App.axaml" value="SmoothScroller/SmoothScroller.Desktop/SmoothScroller.Desktop.csproj" />
+        <entry key="SmoothScroller/SmoothScroller/Views/BarControl.axaml" value="SmoothScroller/SmoothScroller.Desktop/SmoothScroller.Desktop.csproj" />
+        <entry key="SmoothScroller/SmoothScroller/Views/BarControl.xaml" value="SmoothScroller/SmoothScroller.Desktop/SmoothScroller.Desktop.csproj" />
+        <entry key="SmoothScroller/SmoothScroller/Views/BarView.axaml" value="SmoothScroller/SmoothScroller.Desktop/SmoothScroller.Desktop.csproj" />
+        <entry key="SmoothScroller/SmoothScroller/Views/FooControl.xaml" value="SmoothScroller/SmoothScroller.Desktop/SmoothScroller.Desktop.csproj" />
+        <entry key="SmoothScroller/SmoothScroller/Views/FooView.axaml" value="SmoothScroller/SmoothScroller.Desktop/SmoothScroller.Desktop.csproj" />
+        <entry key="SmoothScroller/SmoothScroller/Views/MainView.axaml" value="SmoothScroller/SmoothScroller.Desktop/SmoothScroller.Desktop.csproj" />
+        <entry key="SmoothScroller/SmoothScroller/Views/MainWindow.axaml" value="SmoothScroller/SmoothScroller.Desktop/SmoothScroller.Desktop.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

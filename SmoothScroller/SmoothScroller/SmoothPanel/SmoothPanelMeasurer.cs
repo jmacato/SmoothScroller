@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using Avalonia;
 
@@ -23,24 +24,20 @@ namespace SmoothScroller
             /// <summary>
             /// The collection of children.
             /// </summary>
-            private readonly SmoothPanelChildren _children;
-
+ 
             /// <summary>
             /// The view model collection.
             /// </summary>
-            private readonly System.Collections.IList _items;
-
+ 
             /// <summary>
             /// The available size.
             /// </summary>
-            private readonly Size _availableSize;
-
+ 
             /// <summary>
             /// Value indicating whether first visible item should remain in its position or first
             /// item should be based on scroll position.
             /// </summary>
-            private bool _keepFirstItem;
-
+ 
             /// <summary>
             /// The total estimated height of all visual elements.
             /// </summary>
@@ -49,28 +46,26 @@ namespace SmoothScroller
             /// <summary>
             /// The last visible item index.
             /// </summary>
-            private int _lastItemIndex;
-
+ 
             /// <summary>
             /// The ratio of clipped part of last visible item to its height.
             /// </summary>
             private double _lastItemClippedRatio;
+
+            private bool _keepFirstItem;
+            private int _lastItemIndex;
+            private Size _availableSize;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="SmoothPanelMeasurer"/> class.
             /// </summary>
             /// <param name="panel">The panel.</param>
             /// <param name="availableSize">The available size.</param>
-            public SmoothPanelMeasurer(SmoothPanel panel, Size availableSize)
+            public SmoothPanelMeasurer(SmoothPanel panel)
             {
                 _panel = panel;
-                _children = panel._children;
-                _items = _children.GetItems();
-                _keepFirstItem = FirstItemIndex >= 0;
-                _lastItemIndex = -1;
-                _availableSize = availableSize;
             }
-
+            
             /// <summary>
             /// Gets the index of first visible item.
             /// </summary>
@@ -118,8 +113,17 @@ namespace SmoothScroller
             /// <summary>
             /// Measures child elements and prepares panel layout.
             /// </summary>
-            public void Measure()
+            public void Measure(Size availableSize)
             {
+                
+                
+                
+                    var _items = _panel._children.GetItems();
+                 _keepFirstItem = FirstItemIndex >= 0;
+                _lastItemIndex = -1;
+                _availableSize = availableSize;
+                
+                
                 // Some unexpected artifacts are better than infinite loop.
                 bool lastChance = false;
                 int lastIndex;
@@ -132,14 +136,14 @@ namespace SmoothScroller
                         return;
                     }
 
-                    _children.CreateTopmostElements(_availableSize);
+                    _panel._children.CreateTopmostElements(_availableSize);
 
-                    _totalHeight = GetTotalHeight(out _lastItemIndex, out _lastItemClippedRatio);
+                    _totalHeight = GetTotalHeight(_items, out _lastItemIndex, out _lastItemClippedRatio);
 
                     if (!_keepFirstItem && _lastItemIndex >= 0)
                     {
                         // Get first visible item by last one
-                        GetFirstItem();
+                        GetFirstItem(_items);
                     }
 
                     if (FirstItemIndex < 0)
@@ -153,7 +157,7 @@ namespace SmoothScroller
 
                     // Generate all visible items.
                     double bottom;
-                    GenerateChildren(out lastIndex, out bottom);
+                    GenerateChildren(_items, out lastIndex, out bottom);
 
                     bool scrollChanged = false;
 
@@ -191,10 +195,10 @@ namespace SmoothScroller
                             double newReverseScrollOffset = 0;
                             if (lastIndex < _items.Count)
                             {
-                                newReverseScrollOffset = _lastItemClippedRatio * _children.GetEstimatedHeight(lastIndex);
+                                newReverseScrollOffset = _lastItemClippedRatio * _panel._children.GetEstimatedHeight(lastIndex);
                                 for (int i = lastIndex + 1; i < _items.Count; i++)
                                 {
-                                    newReverseScrollOffset += _children.GetEstimatedHeight(i);
+                                    newReverseScrollOffset +=_panel. _children.GetEstimatedHeight(i);
                                 }
                             }
 
@@ -216,7 +220,7 @@ namespace SmoothScroller
                 while (lastChance);
 
                 // Remove odd children.
-                _children.TrimElements(FirstItemIndex, lastIndex);
+                _panel._children.TrimElements(FirstItemIndex, lastIndex);
             }
 
             /// <summary>
@@ -224,14 +228,14 @@ namespace SmoothScroller
             /// </summary>
             /// <param name="lastIndex">The last index.</param>
             /// <param name="bottom">The bottom.</param>
-            private void GenerateChildren(out int lastIndex, out double bottom)
+            private void GenerateChildren(IList _items, out int lastIndex, out double bottom)
             {
                 _lastItemIndex = -1;
                 double top = 0;
                 int itemIndex;
                 for (itemIndex = FirstItemIndex; itemIndex < _items.Count; itemIndex++)
                 {
-                    var child = _children.GetMeasuredChild(_items, itemIndex);
+                    var child = _panel._children.GetMeasuredChild(_items, itemIndex);
 
                     if (itemIndex == FirstItemIndex)
                     {
@@ -254,12 +258,12 @@ namespace SmoothScroller
             /// <summary>
             /// Gets the first item by last one.
             /// </summary>
-            private void GetFirstItem()
+            private void GetFirstItem(IList _items)
             {
                 double bottomHeight = 0;
                 for (int i = _lastItemIndex; i >= 0; i--)
                 {
-                    var child = _children.GetMeasuredChild(_items, i);
+                    var child = _panel._children.GetMeasuredChild(_items, i);
                     double childHeight = child.DesiredSize.Height;
                     if (i == _lastItemIndex)
                     {
@@ -284,7 +288,7 @@ namespace SmoothScroller
             /// <param name="lastItemIndex">Last visible item index.</param>
             /// <param name="lastItemClippedRatio">The ratio of clipped part of last visible item to its height.</param>
             /// <returns>A <see cref="double"/> that represents a total estimated height of all children.</returns>
-            private double GetTotalHeight(out int lastItemIndex, out double lastItemClippedRatio)
+            private double GetTotalHeight(IList _items, out int lastItemIndex, out double lastItemClippedRatio)
             {
                 double totalHeight = 0;
                 if (_keepFirstItem)
@@ -292,7 +296,7 @@ namespace SmoothScroller
                     // No need to determine last visible item
                     for (int i = 0; i < _items.Count; i++)
                     {
-                        double itemHeight = _children.GetEstimatedHeight(i);
+                        double itemHeight = _panel._children.GetEstimatedHeight(i);
                         totalHeight += itemHeight;
                     }
                     _panel.UpdateScrollInfo(_availableSize, totalHeight);
@@ -314,7 +318,7 @@ namespace SmoothScroller
                     // Determine last visible item
                     for (int i = _items.Count - 1; i >= 0; i--)
                     {
-                        double itemHeight = _children.GetEstimatedHeight(i);
+                        double itemHeight = _panel._children.GetEstimatedHeight(i);
                         totalHeight += itemHeight;
                         if (lastItemIndex < 0 && totalHeight > reverseScrollOffset)
                         {

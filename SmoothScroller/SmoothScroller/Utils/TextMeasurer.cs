@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text; 
+using System.Text;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -10,6 +10,8 @@ namespace SmoothPanelSample
         private static double _lineHeight = -1;
 
         private static double _charWidth = -1;
+
+        private static TextBlock textBlock = new();
 
         public static double GetEstimatedHeight(string text, double width)
         {
@@ -29,6 +31,7 @@ namespace SmoothPanelSample
                 {
                     endChar = text.Length;
                 }
+
                 int charCount = Math.Max(1, endChar - startChar);
                 startChar = endChar + 1;
 
@@ -50,13 +53,13 @@ namespace SmoothPanelSample
             {
                 text.Append(ch);
             }
+
             text.Append("\r\n");
             for (char ch = 'A'; ch <= 'Z'; ch++)
             {
                 text.Append(ch);
             }
 
-            var textBlock = new TextBlock();
             textBlock.Text = text.ToString();
             textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 

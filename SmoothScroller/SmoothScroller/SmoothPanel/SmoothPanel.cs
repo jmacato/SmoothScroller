@@ -87,6 +87,7 @@ namespace SmoothScroller
         public SmoothPanel() : base()
         {
             _children = new SmoothPanelChildren(this);
+            _measurer = new SmoothPanelMeasurer(this);
 
             Templates.CollectionChanged += (sender, args) => TemplatesOnCollectionChanged();
         }
@@ -191,7 +192,8 @@ namespace SmoothScroller
         }
 
         private bool isMeasureArrangeHappening = false;
-        
+        private readonly SmoothPanelMeasurer _measurer;
+
         /// <summary>
         /// When overridden in a derived class, measures the size in layout required for child elements and
         /// determines a size for the <see cref="T:System.Windows.Control" />-derived class.
@@ -216,8 +218,7 @@ namespace SmoothScroller
 
             _children.AvailableWidth = availableSize.Width;
 
-            var measurer = new SmoothPanelMeasurer(this, availableSize);
-            measurer.Measure();
+            _measurer.Measure(availableSize);
 
             return availableSize;
         }

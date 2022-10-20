@@ -25,6 +25,10 @@ namespace SmoothScroller
     /// </summary>
     public partial class SmoothPanel : Panel, ILogicalScrollable
     {
+        static SmoothPanel()
+        {
+            AffectsRender<SmoothPanel>( BoundsProperty);
+        }
         
         /// <summary>
         /// The line scroll value

@@ -42,11 +42,6 @@ namespace Devart.Controls
         private readonly SmoothPanelChildren _children;
 
         /// <summary>
-        /// A <see cref="T:ScrollViewer" /> element that controls scrolling behavior.
-        /// </summary>
-        private ScrollViewer _scrollOwner;
-
-        /// <summary>
         /// The size of scroll extent.
         /// </summary>
         private Size _scrollExtent;
@@ -179,12 +174,8 @@ namespace Devart.Controls
             if (Math.Abs(offset - _scrollOffset) > double.Epsilon)
             {
                 _scrollOffset = offset;
-
-                if (_scrollOwner != null)
-                {
-                    // Update scrollbar
-                    _scrollOwner.InvalidateVisual();
-                }
+ 
+                ScrollInvalidated?.Invoke(this, EventArgs.Empty);
  
                 if (invalidateMeasure)
                 {
@@ -258,9 +249,9 @@ namespace Devart.Controls
 
             for (int index = _firstItemIndex; index < _children.ItemsCount; index++)
             {
-                Control element = _children.GetElement(index);
+                Control? element = _children.GetElement(index);
 
-                if (element != null)
+                if (element is not null)
                 {
                     double height = element.DesiredSize.Height;
 
@@ -320,10 +311,6 @@ namespace Devart.Controls
                 double maxOffset = _scrollExtent.Height - _scrollViewport.Height;
                 _scrollOffset = Math.Max(0, Math.Min(_scrollOffset, maxOffset));
                 ScrollInvalidated?.Invoke(this, EventArgs.Empty);
-                if (_scrollOwner != null)
-                {
-                    _scrollOwner.InvalidateVisual();
-                }
             }
         }
         
@@ -387,15 +374,16 @@ namespace Devart.Controls
         
         public Size ScrollSize
         {
-            get => _scrollExtent;
+            get => new Size(_scrollExtent.Width, LineScrollValue);
         }
 
         public Size PageScrollSize
         {
-            get => _scrollViewport;
+            get => new Size(_scrollExtent.Width, WheelScrollValue);
         }
         
         public event EventHandler? ScrollInvalidated;
+        
         public Size Extent
         {
             get => _scrollExtent;

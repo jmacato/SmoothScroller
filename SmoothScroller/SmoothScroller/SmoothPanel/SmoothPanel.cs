@@ -10,41 +10,31 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics; 
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
+using Avalonia.Input;
 using Avalonia.Threading;
-using Devart.Controls;
-using DynamicData.Binding;
+using Avalonia.VisualTree;
 
 namespace Devart.Controls
 {
     /// <summary>
     /// Panel that virtualizes child collection and supports smooth scrolling.
     /// </summary>
-    public partial class SmoothPanel : VirtualizingPanel, IScrollable
+    public partial class SmoothPanel : Panel, ILogicalScrollable, IStyledElement
     {
-        // /// <summary>
-        // /// Using a AvaloniaProperty as the backing store for Templates.
-        // /// </summary>
-        // public static readonly AvaloniaProperty TemplatesProperty;
-
-        // /// <summary>
-        // /// The line scroll value
-        // /// </summary>
-        // private const double LineScrollValue = 16;
-        //
-        // /// <summary>
-        // /// The wheel scroll value
-        // /// </summary>
-        // private const double WheelScrollValue = 64;
+        
+        /// <summary>
+        /// The line scroll value
+        /// </summary>
+        private const double LineScrollValue = 16;
 
         /// <summary>
-        /// Dependency property identifier for limited write access to a Templates property.
+        /// The wheel scroll value
         /// </summary>
-        // private static readonly AvaloniaPropertyKey _templatesPropertyKey;
+        private const double WheelScrollValue = 64;
 
         /// <summary>
         /// The <see cref="SmoothPanelChildren"/>
@@ -80,103 +70,95 @@ namespace Devart.Controls
         /// The ratio of clipped part of first visible item to its height.
         /// </summary>
         private double _firstItemClippedRatio;
- 
+
 
         public static readonly StyledProperty<ObservableCollection<SmoothPanelTemplate>> TemplatesProperty =
-            AvaloniaProperty.Register<SmoothPanel, ObservableCollection<SmoothPanelTemplate>>(nameof(Templates), new ObservableCollection<SmoothPanelTemplate>());
+            AvaloniaProperty.Register<SmoothPanel, ObservableCollection<SmoothPanelTemplate>>(nameof(Templates),
+                new ObservableCollection<SmoothPanelTemplate>());
 
-        public ObservableCollection<SmoothPanelTemplate> Templates   
+        public ObservableCollection<SmoothPanelTemplate> Templates
         {
             get => GetValue(TemplatesProperty);
             set => SetValue(TemplatesProperty, value);
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SmoothPanel"/> class.
         /// </summary>
         public SmoothPanel() : base()
-        { 
-             _children = new SmoothPanelChildren(this);
-            
-            Templates.CollectionChanged += (sender, args) =>  TemplatesOnCollectionChanged();
+        {
+            _children = new SmoothPanelChildren(this);
+
+            Templates.CollectionChanged += (sender, args) => TemplatesOnCollectionChanged();
         }
- 
 
         private void TemplatesOnCollectionChanged()
         {
             _children.ResetViewCaches();
         }
 
-        // /// <summary>
-        // /// Gets the templates.
-        // /// </summary>
-        // /// <value>
-        // /// The templates.
-        // /// </value>
-        // public Collection<SmoothPanelTemplate> Templates
-        // {
-        //     get
-        //     {
-        //         return (Collection<SmoothPanelTemplate>)GetValue(TemplatesProperty);
-        //     }
-        // }
-        //
-        // /// <summary>
-        // /// Causes the item to scroll into view.
-        // /// </summary>
-        // /// <param name="itemIndex">Index of the item.</param>
-        // public void ScrollIntoView(int itemIndex)
-        // {
-        //     ScrollIntoView(itemIndex, null);
-        // }
-        //
-        // /// <summary>
-        // /// Causes the item to scroll into view.
-        // /// </summary>
-        // /// <param name="itemIndex">Index of the item.</param>
-        // /// <param name="afterScrollAction">An action that will be called after scrolling item into view.</param>
-        // public void ScrollIntoView(int itemIndex, Action<Control> afterScrollAction)
-        // {
-        //     var items = _children.GetItems();
-        //
-        //     if (items == null || itemIndex < 0 || itemIndex >= items.Count)
-        //     {
-        //         return;
-        //     }
-        //
-        //     var element = _children.GetElement(itemIndex);
-        //     if (element != null && System.Windows.Media.VisualTreeHelper.GetParent(element) == this)
-        //     {
-        //         // Child already created, just ensure its visibility
-        //         ((IScrollInfo)this).MakeVisible(element, new Rect(0, 0, element.ActualWidth, element.ActualHeight));
-        //         if (afterScrollAction != null)
-        //         {
-        //             afterScrollAction(element);
-        //         }
-        //     }
-        //     else
-        //     {
-        //         // Scroll to specified item
-        //         SetFirstVisibleItem(itemIndex, 0);
-        //         InvalidateMeasure();
-        //
-        //         if (afterScrollAction != null)
-        //         {
-        //             // Item will be visible only after rearrangement, so use BeginInvoke to call the action.
-        //             Dispatcher.BeginInvoke(
-        //                 (Action)(() =>
-        //                 {
-        //                     var newElement = _children.GetElement(itemIndex);
-        //                     if (newElement != null)
-        //                     {
-        //                         afterScrollAction(newElement);
-        //                     }
-        //                 }),
-        //                 DispatcherPriority.Loaded);
-        //         }
-        //     }
-        // }
+        /// <summary>
+        /// Causes the item to scroll into view.
+        /// </summary>
+        /// <param name="itemIndex">Index of the item.</param>
+        public void ScrollIntoView(int itemIndex)
+        {
+            ScrollIntoView(itemIndex, null);
+        }
+        
+        protected internal virtual void BringIndexIntoView(int index)
+        {
+            ScrollIntoView(index, null);
+        }
+ 
+        /// <summary>
+        /// Causes the item to scroll into view.
+        /// </summary>
+        /// <param name="itemIndex">Index of the item.</param>
+        /// <param name="afterScrollAction">An action that will be called after scrolling item into view.</param>
+        public void ScrollIntoView(int itemIndex, Action<Control> afterScrollAction)
+        {
+            var items = _children.GetItems();
 
+            if (items == null || itemIndex < 0 || itemIndex >= items.Count)
+            {
+                return;
+            }
+
+            var element = _children.GetElement(itemIndex);
+            if (element != null && element.GetVisualParent() == this)
+            {
+                // Child already created, just ensure its visibility
+                this.BringIntoView(element, new Rect(0, 0, element.Bounds.Width, element.Bounds.Height));
+                if (afterScrollAction != null)
+                {
+                    afterScrollAction(element);
+                }
+            }
+            else
+            {
+                // Scroll to specified item
+                SetFirstVisibleItem(itemIndex, 0);
+                InvalidateMeasure();
+
+                if (afterScrollAction != null)
+                {
+                    // Item will be visible only after rearrangement, so use BeginInvoke to call the action.
+                    Dispatcher.UIThread.Post(
+                        () =>
+                        {
+                            var newElement = _children.GetElement(itemIndex);
+                            if (newElement != null)
+                            {
+                                afterScrollAction(newElement);
+                            }
+                        },
+                        DispatcherPriority.Loaded);
+                }
+            }
+        }
+        
+        
         /// <summary>
         /// Sets the vertical offset.
         /// </summary>
@@ -203,7 +185,7 @@ namespace Devart.Controls
                     // Update scrollbar
                     _scrollOwner.InvalidateVisual();
                 }
-
+ 
                 if (invalidateMeasure)
                 {
                     // First item should be found by new scroll position
@@ -213,6 +195,8 @@ namespace Devart.Controls
             }
         }
 
+        private bool isMeasureArrangeHappening = false;
+        
         /// <summary>
         /// When overridden in a derived class, measures the size in layout required for child elements and
         /// determines a size for the <see cref="T:System.Windows.Control" />-derived class.
@@ -298,20 +282,20 @@ namespace Devart.Controls
                     }
                 }
             }
-            
-            Debug.WriteLine($"{_children.GetRealizedElements} Realized Elements. {_children.GetTotalElements} Total Items.");
+
+            Debug.WriteLine(
+                $"{_children.GetRealizedElements} Realized Elements. {_children.GetTotalElements} Total Items.");
 
             return finalSize;
         }
 
         protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            // _children.ResetItems();
             
             InvalidateMeasure();
             base.ChildrenChanged(sender, e);
         }
- 
+
         /// <summary>
         /// Sets the first visible item.
         /// </summary>
@@ -338,24 +322,88 @@ namespace Devart.Controls
                 _scrollViewport = newScrollViewport;
                 double maxOffset = _scrollExtent.Height - _scrollViewport.Height;
                 _scrollOffset = Math.Max(0, Math.Min(_scrollOffset, maxOffset));
-
+                ScrollInvalidated?.Invoke(this, EventArgs.Empty);
                 if (_scrollOwner != null)
                 {
                     _scrollOwner.InvalidateVisual();
                 }
             }
         }
+        
+        
+        /// <summary>
+        /// Forces content to scroll until the coordinate space of a <see cref="T:System.Windows.Media.Visual" /> object is visible.
+        /// </summary>
+        /// <param name="visual">A <see cref="T:System.Windows.Media.Visual" /> that becomes visible.</param>
+        /// <param name="rectangle">A bounding rectangle that identifies the coordinate space to make visible.</param>
+        /// <returns>
+        /// A <see cref="T:System.Windows.Rect" /> that is visible.
+        /// </returns>
+        public bool BringIntoView(IControl target, Rect targetRect)
+        {
+            var topDelta = target.TransformToVisual(this)!.Value.Transform(targetRect.Position).Y;
+            var bottomDelta = topDelta + targetRect.Height - _scrollViewport.Height;
 
+            if (topDelta < 0)
+            {
+                // Top part is out of scroll
+                SetVerticalOffset(_scrollOffset + topDelta, true);
+            }
+            else if (bottomDelta > 0)
+            {
+                // Bottom part is out of scroll
+                SetVerticalOffset(_scrollOffset + bottomDelta, true);
+            }
+
+            return true;
+        }
+
+        public IControl? GetControlInDirection(NavigationDirection direction, IControl? from)
+        {
+            return null; 
+        }
+
+        public void RaiseScrollInvalidated(EventArgs e)
+        { 
+        }
+
+        public bool CanHorizontallyScroll
+        {
+            get => false;
+            set
+            {
+            }
+        }
+
+        public bool CanVerticallyScroll 
+        {
+            get => true;
+            set
+            {
+            }
+        }
+        
+        public bool IsLogicalScrollEnabled
+        {
+            get => true;
+        }
+        
+        public Size ScrollSize
+        {
+            get => _scrollExtent;
+        }
+
+        public Size PageScrollSize
+        {
+            get => _scrollViewport;
+        }
+        
+        public event EventHandler? ScrollInvalidated;
         public Size Extent
         {
             get => _scrollExtent;
         }
-        public Vector Offset
-        {
-            get => new Vector(0, _scrollOffset);
-            set => SetVerticalOffset(value.Y, true);
-        }
-
+        public Vector Offset { get; set; }
         public Size Viewport
         {
             get => _scrollViewport;

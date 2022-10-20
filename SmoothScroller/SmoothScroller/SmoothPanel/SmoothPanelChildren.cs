@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace Devart.Controls
@@ -95,11 +96,8 @@ namespace Devart.Controls
             /// <value>
             /// A <see cref="Controls"/> of child elements.
             /// </value>
-            private Avalonia.Controls.Controls Children
-            {
-                get { return _panel.Children; }
-             }
-
+            private Avalonia.Controls.Controls Children => _panel.Children;
+            
             /// <summary>
             /// Gets the element.
             /// </summary>
@@ -151,7 +149,7 @@ namespace Devart.Controls
                 if (Children.Count > 0)
                 {
                     // Remove all visual elements
-                    _panel.RemoveInternalChildRange(0, Children.Count);
+                    Children.RemoveRange(0, Children.Count);
                 }
 
                 foreach (var element in _elementsByIndex)
@@ -210,7 +208,7 @@ namespace Devart.Controls
                     }
 
                     // Add child element to panel.
-                    _panel.InsertInternalChild(visualElementIndex, element);
+                    Children.Insert(visualElementIndex, element);
                 }
 
 
@@ -285,13 +283,19 @@ namespace Devart.Controls
                             if (deleteControl)
                             {
                                 _elementsByIndex[itemIndex] = null;
+
+                                if (itemIndex < (Children.Count - 1))
+                                {
+                                    Children.RemoveRange(itemIndex, 1);
+                                }
+
                             }
 
                             // Remove all odd children
                             var index = Children.IndexOf(element);
                             if (index >= 0)
                             {
-                                _panel.RemoveInternalChildRange(index, 1);
+                                Children.RemoveRange(index, 1);
                                 if (deleteControl)
                                 {
                                     if (element.DataContext != null)

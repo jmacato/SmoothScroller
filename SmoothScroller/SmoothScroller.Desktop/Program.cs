@@ -16,7 +16,6 @@ namespace SmoothScroller.Desktop
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .With(new X11PlatformOptions(){ UseGpu = false })
                 .LogToTrace();
     }
 }

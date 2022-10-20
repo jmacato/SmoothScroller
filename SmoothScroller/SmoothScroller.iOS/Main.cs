@@ -1,5 +1,3 @@
-using UIKit;
-
 namespace SmoothScroller.iOS
 {
     public class Application

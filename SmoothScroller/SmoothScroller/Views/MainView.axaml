@@ -4,31 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:SmoothScroller.ViewModels"
              xmlns:controls="clr-namespace:SmoothScroller"
-             xmlns:sample="clr-namespace:SmoothPanelSample"
              xmlns:views="clr-namespace:SmoothScroller.Views"
-             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SmoothScroller.Views.MainView"
              Foreground="White"
              Background="#171C2C">
-  <Design.DataContext>
-    <viewModels:MainViewModel />
-  </Design.DataContext>
-    
-     <ItemsControl Items="{Binding Items}">
-         <ItemsControl.Template>
-             <ControlTemplate>
-                 <ScrollViewer>
-                     <controls:SmoothPanel>
-                         <controls:SmoothPanel.Templates>
-                             <controls:SmoothPanelTemplate ViewModel="{x:Type views:FooViewModel}"
-                                                           View="{x:Type views:FooView}" />
-                             <controls:SmoothPanelTemplate ViewModel="{x:Type views:BarViewModel}"
-                                                           View="{x:Type views:BarView}" /> 
-                         </controls:SmoothPanel.Templates>
-                     </controls:SmoothPanel>
-                 </ScrollViewer>
-             </ControlTemplate>
-         </ItemsControl.Template> 
+    <Design.DataContext>
+        <viewModels:MainViewModel />
+    </Design.DataContext>
+
+    <ItemsControl Items="{Binding Items}">
+        <ItemsControl.Template>
+            <ControlTemplate>
+                <ScrollViewer>
+                    <controls:SmoothPanel>
+                        <controls:SmoothPanel.Templates>
+                            <controls:SmoothPanelTemplate ViewModel="{x:Type views:FooViewModel}"
+                                                          View="{x:Type views:FooView}" />
+                            <controls:SmoothPanelTemplate ViewModel="{x:Type views:BarViewModel}"
+                                                          View="{x:Type views:BarView}" />
+                        </controls:SmoothPanel.Templates>
+                    </controls:SmoothPanel>
+                </ScrollViewer>
+            </ControlTemplate>
+        </ItemsControl.Template>
     </ItemsControl>
 </UserControl>

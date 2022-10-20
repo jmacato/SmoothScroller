@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia.Media;
-using SmoothPanelSample;
 using SmoothScroller.Views;
 
 namespace SmoothScroller.ViewModels

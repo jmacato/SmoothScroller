@@ -13,7 +13,7 @@ using System.Windows;
 using Avalonia;
 using Avalonia.Controls;
 
-namespace Devart.Controls
+namespace SmoothScroller
 {
     /// <content>
     /// Nested type is used.

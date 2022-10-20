@@ -8,7 +8,7 @@
 // --------------------------------------------------------------------------
 
 using Avalonia.Media;
-using Devart.Controls;
+using SmoothScroller;
 using ReactiveUI;
 using SmoothPanelSample;
 using SmoothScroller.ViewModels;

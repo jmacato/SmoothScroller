@@ -4,7 +4,7 @@ using System.ComponentModel.Design.Serialization;
 using System.Globalization;
 using System.Reflection;
 
-namespace Devart.Controls;
+namespace SmoothScroller;
 
 /// <summary>
 /// VirtualizationCacheLengthConverter - Converter class for converting

@@ -7,7 +7,7 @@
 //
 // --------------------------------------------------------------------------
  
-using Devart.Controls;
+using SmoothScroller;
 using ReactiveUI;
 using SmoothScroller.ViewModels;
 

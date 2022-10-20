@@ -7,7 +7,7 @@
 //
 // --------------------------------------------------------------------------
 
-namespace Devart.Controls
+namespace SmoothScroller
 {
     internal interface IHeightMeasurer
     {

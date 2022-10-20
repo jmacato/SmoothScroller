@@ -1,4 +1,4 @@
-namespace Devart.Controls;
+namespace SmoothScroller;
 
 /// <summary>
 /// VirtualizationCacheLengthUnit enum is used to indicate what kind of value the 

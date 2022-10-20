@@ -10,7 +10,7 @@
 using System; 
 using Avalonia; 
 
-namespace Devart.Controls
+namespace SmoothScroller
 {
     /// <summary>
     /// Maps type of view model to type of visual element.

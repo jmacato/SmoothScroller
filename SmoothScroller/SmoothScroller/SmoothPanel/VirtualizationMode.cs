@@ -1,4 +1,4 @@
-namespace Devart.Controls;
+namespace SmoothScroller;
 
 /// <summary>
 /// Enumeration that specifies the virtualization mode of the VirtualizingPanel. 

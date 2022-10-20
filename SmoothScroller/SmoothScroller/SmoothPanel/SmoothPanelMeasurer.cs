@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.Windows;
 using Avalonia;
 
-namespace Devart.Controls
+namespace SmoothScroller
 {
     /// <content>
     /// Nested type is used.

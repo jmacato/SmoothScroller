@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace Devart.Controls;
+namespace SmoothScroller;
 
 /// <summary>
 /// VirtualizationCacheLength is the type used for length of the cache used by VirtualizingPanels

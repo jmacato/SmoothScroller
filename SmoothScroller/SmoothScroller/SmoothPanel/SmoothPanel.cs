@@ -18,7 +18,7 @@ using Avalonia.Input;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace Devart.Controls
+namespace SmoothScroller
 {
     /// <summary>
     /// Panel that virtualizes child collection and supports smooth scrolling.

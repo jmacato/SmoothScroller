@@ -17,7 +17,7 @@ using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
-namespace Devart.Controls
+namespace SmoothScroller
 {
     /// <content>
     /// Nested type is used.

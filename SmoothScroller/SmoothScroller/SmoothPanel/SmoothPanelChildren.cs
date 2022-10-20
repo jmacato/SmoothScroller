@@ -54,9 +54,6 @@ namespace Devart.Controls
             /// </summary>
             private Control[] _elementsByIndex = new Control[0];
 
-            internal int GetRealizedElements => _elementsByIndex.Count(x => x is not null);
-            internal int GetTotalElements => _elementsByIndex.Length;
-
             /// <summary>
             /// The collection of element caches.
             /// </summary>

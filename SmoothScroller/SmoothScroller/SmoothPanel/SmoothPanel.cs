@@ -283,9 +283,6 @@ namespace Devart.Controls
                 }
             }
 
-            Debug.WriteLine(
-                $"{_children.GetRealizedElements} Realized Elements. {_children.GetTotalElements} Total Items.");
-
             return finalSize;
         }
 

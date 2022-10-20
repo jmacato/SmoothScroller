@@ -23,7 +23,7 @@ namespace SmoothScroller
     /// <summary>
     /// Panel that virtualizes child collection and supports smooth scrolling.
     /// </summary>
-    public partial class SmoothPanel : Panel, ILogicalScrollable, IStyledElement
+    public partial class SmoothPanel : Panel, ILogicalScrollable
     {
         
         /// <summary>
@@ -115,7 +115,7 @@ namespace SmoothScroller
         {
             var items = _children.GetItems();
 
-            if (items == null || itemIndex < 0 || itemIndex >= items.Count)
+            if (items is {  } || itemIndex < 0 || itemIndex >= items.Count)
             {
                 return;
             }

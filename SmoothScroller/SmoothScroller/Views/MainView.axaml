@@ -15,12 +15,10 @@
     <viewModels:MainViewModel />
   </Design.DataContext>
     
-     <ItemsControl Items="{Binding Items}"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  ScrollViewer.VerticalScrollBarVisibility="Visible">
+     <ItemsControl Items="{Binding Items}">
          <ItemsControl.Template>
              <ControlTemplate>
-                 <ScrollViewer >
+                 <ScrollViewer>
                      <controls:SmoothPanel>
                          <controls:SmoothPanel.Templates>
                              <controls:SmoothPanelTemplate ViewModel="{x:Type views:FooViewModel}"

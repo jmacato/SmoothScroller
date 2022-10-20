@@ -12,7 +12,7 @@ namespace SmoothScroller.ViewModels
     {
         public MainViewModel()
         {
-            Items = GetTestItems(10000);
+            Items = GetTestItems(5000);
         }
 
         public IEnumerable Items { get; }

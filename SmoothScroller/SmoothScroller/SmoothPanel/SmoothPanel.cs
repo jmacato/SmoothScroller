@@ -29,7 +29,7 @@ namespace Devart.Controls
         /// <summary>
         /// The line scroll value
         /// </summary>
-        private const double LineScrollValue = 16;
+        private const double LineScrollValue = 32;
 
         /// <summary>
         /// The wheel scroll value
@@ -280,7 +280,7 @@ namespace Devart.Controls
         protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             
-            InvalidateMeasure();
+            // InvalidateMeasure();
             base.ChildrenChanged(sender, e);
         }
 
@@ -367,36 +367,22 @@ namespace Devart.Controls
             }
         }
         
-        public bool IsLogicalScrollEnabled
-        {
-            get => true;
-        }
-        
-        public Size ScrollSize
-        {
-            get => new Size(_scrollExtent.Width, LineScrollValue);
-        }
+        public bool IsLogicalScrollEnabled => true;
 
-        public Size PageScrollSize
-        {
-            get => new Size(_scrollExtent.Width, WheelScrollValue);
-        }
-        
+        public Size ScrollSize => new Size(_scrollExtent.Width, LineScrollValue);
+
+        public Size PageScrollSize => new Size(_scrollExtent.Width, WheelScrollValue);
+
         public event EventHandler? ScrollInvalidated;
         
-        public Size Extent
-        {
-            get => _scrollExtent;
-        }
+        public Size Extent => _scrollExtent;
+
         public Vector Offset
         {
             get => new Vector(0, _scrollOffset);
             set => SetVerticalOffset(value.Y, true);
         }
 
-        public Size Viewport
-        {
-            get => _scrollViewport;
-        }
+        public Size Viewport => _scrollViewport;
     }
 }

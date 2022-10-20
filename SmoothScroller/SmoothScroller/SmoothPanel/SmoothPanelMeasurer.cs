@@ -87,13 +87,7 @@ namespace Devart.Controls
             /// <value>
             /// The index of first visible item.
             /// </value>
-            private int FirstItemIndex
-            {
-                get
-                {
-                    return _panel._firstItemIndex;
-                }
-            }
+            private int FirstItemIndex => _panel._firstItemIndex;
 
             /// <summary>
             /// Gets the ratio of clipped part of last visible item to its height.
@@ -101,13 +95,7 @@ namespace Devart.Controls
             /// <value>
             /// The ratio of clipped part of last visible item to its height.
             /// </value>
-            private double FirstItemClippedRatio
-            {
-                get
-                {
-                    return _panel._firstItemClippedRatio;
-                }
-            }
+            private double FirstItemClippedRatio => _panel._firstItemClippedRatio;
 
             /// <summary>
             /// Gets or sets the reverse vertical offset of the scrolled content.
@@ -117,10 +105,7 @@ namespace Devart.Controls
             /// </value>
             private double ReverseScrollOffset
             {
-                get
-                {
-                    return _panel._scrollExtent.Height - _availableSize.Height - _panel._scrollOffset;
-                }
+                get => _panel._scrollExtent.Height - _availableSize.Height - _panel._scrollOffset;
                 set
                 {
                     double offset = _panel._scrollExtent.Height - _availableSize.Height - value;
@@ -136,14 +121,8 @@ namespace Devart.Controls
             /// </value>
             private double ScrollOffset
             {
-                get
-                {
-                    return _panel._scrollOffset;
-                }
-                set
-                {
-                    _panel.SetVerticalOffset(value, false);
-                }
+                get => _panel._scrollOffset;
+                set => _panel.SetVerticalOffset(value, false);
             }
 
             /// <summary>

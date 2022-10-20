@@ -125,12 +125,12 @@ public struct VirtualizationCacheLength : IEquatable<VirtualizationCacheLength>
     /// <summary>
     /// Returns cacheBeforeViewport part of this VirtualizationCacheLength instance.
     /// </summary>
-    public double CacheBeforeViewport { get { return _cacheBeforeViewport; } }
+    public double CacheBeforeViewport => _cacheBeforeViewport;
 
     /// <summary>
     /// Returns cacheAfterViewport part of this VirtualizationCacheLength instance.
     /// </summary>
-    public double CacheAfterViewport { get { return _cacheAfterViewport; } }
+    public double CacheAfterViewport => _cacheAfterViewport;
 
     /// <summary>
     /// Returns the string representation of this object.

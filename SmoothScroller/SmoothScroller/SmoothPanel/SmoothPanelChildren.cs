@@ -74,10 +74,7 @@ namespace Devart.Controls
             /// <value>
             /// The number of items from the last collection for which measuring is performed.
             /// </value>
-            public int ItemsCount
-            {
-                get { return _items == null ? 0 : _items.Count; }
-            }
+            public int ItemsCount => _items == null ? 0 : _items.Count;
 
             /// <summary>
             /// Gets or sets the available width.

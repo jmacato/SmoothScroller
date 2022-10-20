@@ -20,7 +20,7 @@
                   ScrollViewer.VerticalScrollBarVisibility="Visible">
          <ItemsControl.Template>
              <ControlTemplate>
-                 <ScrollViewer>
+                 <ScrollViewer >
                      <controls:SmoothPanel>
                          <controls:SmoothPanel.Templates>
                              <controls:SmoothPanelTemplate ViewModel="{x:Type views:FooViewModel}"

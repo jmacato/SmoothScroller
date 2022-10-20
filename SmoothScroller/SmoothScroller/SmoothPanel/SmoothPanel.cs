@@ -403,7 +403,12 @@ namespace Devart.Controls
         {
             get => _scrollExtent;
         }
-        public Vector Offset { get; set; }
+        public Vector Offset
+        {
+            get => new Vector(0, _scrollOffset);
+            set => SetVerticalOffset(value.Y, true);
+        }
+
         public Size Viewport
         {
             get => _scrollViewport;

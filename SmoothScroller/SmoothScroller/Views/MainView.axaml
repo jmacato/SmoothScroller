@@ -18,16 +18,9 @@
      <ItemsControl Items="{Binding Items}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Visible">
-         
          <ItemsControl.Template>
-
-             <ControlTemplate TargetType="{x:Type ItemsControl}">
-
-                 <!--Add the ScrollViewer here, inside the ControlTemplate-->
-                 <ScrollViewer >
-
-                     <!--Your items will be added here-->
-
+             <ControlTemplate>
+                 <ScrollViewer>
                      <controls:SmoothPanel>
                          <controls:SmoothPanel.Templates>
                              <controls:SmoothPanelTemplate ViewModel="{x:Type views:FooViewModel}"
@@ -37,9 +30,7 @@
                          </controls:SmoothPanel.Templates>
                      </controls:SmoothPanel>
                  </ScrollViewer>
-
              </ControlTemplate>
-
          </ItemsControl.Template> 
     </ItemsControl>
 </UserControl>

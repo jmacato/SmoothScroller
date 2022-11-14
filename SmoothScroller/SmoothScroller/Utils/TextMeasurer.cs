@@ -19,20 +19,20 @@ namespace SmoothPanelSample
 
             double height = 0;
 
-            int startChar = 0;
+            var startChar = 0;
 
-            int charsPerLine = (int)(width / _charWidth) - 5; // 5 is rough average extra characters for word wrap
+            var charsPerLine = (int)(width / _charWidth) - 5; // 5 is rough average extra characters for word wrap
             charsPerLine = Math.Max(1, charsPerLine);
 
             while (startChar < text.Length)
             {
-                int endChar = text.IndexOf('\n', startChar);
+                var endChar = text.IndexOf('\n', startChar);
                 if (endChar < 0)
                 {
                     endChar = text.Length;
                 }
 
-                int charCount = Math.Max(1, endChar - startChar);
+                var charCount = Math.Max(1, endChar - startChar);
                 startChar = endChar + 1;
 
                 height += _lineHeight * Math.Ceiling((double)charCount / charsPerLine);
@@ -49,13 +49,13 @@ namespace SmoothPanelSample
             }
 
             var text = new StringBuilder();
-            for (char ch = 'a'; ch <= 'z'; ch++)
+            for (var ch = 'a'; ch <= 'z'; ch++)
             {
                 text.Append(ch);
             }
 
             text.Append("\r\n");
-            for (char ch = 'A'; ch <= 'Z'; ch++)
+            for (var ch = 'A'; ch <= 'Z'; ch++)
             {
                 text.Append(ch);
             }

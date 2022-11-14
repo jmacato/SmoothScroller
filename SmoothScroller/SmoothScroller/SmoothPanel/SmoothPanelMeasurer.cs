@@ -10,6 +10,8 @@ namespace SmoothScroller
     /// </content>
     public partial class SmoothPanel
     {
+        public static readonly StyledProperty<bool> AutoScrollOnNewItemProperty = AvaloniaProperty.Register<SmoothPanel, bool>("AutoScrollOnNewItem");
+
         /// <summary>
         /// Temporary instances of this type are used for measuring in
         /// <see cref="M:SmoothPanel.MeasureOverride"/> method.
@@ -93,7 +95,7 @@ namespace SmoothScroller
                 get => _panel._scrollExtent.Height - _availableSize.Height - _panel._scrollOffset;
                 set
                 {
-                    double offset = _panel._scrollExtent.Height - _availableSize.Height - value;
+                    var offset = _panel._scrollExtent.Height - _availableSize.Height - value;
                     _panel.SetVerticalOffset(offset, false);
                 }
             }
@@ -125,7 +127,7 @@ namespace SmoothScroller
                 
                 
                 // Some unexpected artifacts are better than infinite loop.
-                bool lastChance = false;
+                var lastChance = false;
                 int lastIndex;
                 do
                 {
@@ -159,10 +161,10 @@ namespace SmoothScroller
                     double bottom;
                     GenerateChildren(_items, out lastIndex, out bottom);
 
-                    bool scrollChanged = false;
+                    var scrollChanged = false;
 
-                    double extent = _panel._scrollExtent.Height;
-                    double viewPort = _panel._scrollViewport.Height;
+                    var extent = _panel._scrollExtent.Height;
+                    var viewPort = _panel._scrollViewport.Height;
 
                     if (extent < viewPort)
                     {
@@ -196,13 +198,13 @@ namespace SmoothScroller
                             if (lastIndex < _items.Count)
                             {
                                 newReverseScrollOffset = _lastItemClippedRatio * _panel._children.GetEstimatedHeight(lastIndex);
-                                for (int i = lastIndex + 1; i < _items.Count; i++)
+                                for (var i = lastIndex + 1; i < _items.Count; i++)
                                 {
                                     newReverseScrollOffset +=_panel. _children.GetEstimatedHeight(i);
                                 }
                             }
 
-                            double oldScrollOffset = ScrollOffset;
+                            var oldScrollOffset = ScrollOffset;
                             ReverseScrollOffset = newReverseScrollOffset;
                             scrollChanged = oldScrollOffset != ScrollOffset;
                         }
@@ -242,7 +244,7 @@ namespace SmoothScroller
                         top = -child.DesiredSize.Height * FirstItemClippedRatio;
                     }
 
-                    double childHeight = child.DesiredSize.Height;
+                    var childHeight = child.DesiredSize.Height;
                     top += childHeight;
                     if (top >= _availableSize.Height)
                     {
@@ -261,10 +263,10 @@ namespace SmoothScroller
             private void GetFirstItem(IList _items)
             {
                 double bottomHeight = 0;
-                for (int i = _lastItemIndex; i >= 0; i--)
+                for (var i = _lastItemIndex; i >= 0; i--)
                 {
                     var child = _panel._children.GetMeasuredChild(_items, i);
-                    double childHeight = child.DesiredSize.Height;
+                    var childHeight = child.DesiredSize.Height;
                     if (i == _lastItemIndex)
                     {
                         // Consider clipping part
@@ -294,9 +296,9 @@ namespace SmoothScroller
                 if (_keepFirstItem)
                 {
                     // No need to determine last visible item
-                    for (int i = 0; i < _items.Count; i++)
+                    for (var i = 0; i < _items.Count; i++)
                     {
-                        double itemHeight = _panel._children.GetEstimatedHeight(i);
+                        var itemHeight = _panel._children.GetEstimatedHeight(i);
                         totalHeight += itemHeight;
                     }
                     _panel.UpdateScrollInfo(_availableSize, totalHeight);
@@ -306,19 +308,19 @@ namespace SmoothScroller
                     return totalHeight;
                 }
 
-                bool lastChance = false;
+                var lastChance = false;
                 do
                 {
                     totalHeight = 0;
                     lastItemIndex = -1;
                     lastItemClippedRatio = 0;
 
-                    double reverseScrollOffset = ReverseScrollOffset;
+                    var reverseScrollOffset = ReverseScrollOffset;
 
                     // Determine last visible item
-                    for (int i = _items.Count - 1; i >= 0; i--)
+                    for (var i = _items.Count - 1; i >= 0; i--)
                     {
-                        double itemHeight = _panel._children.GetEstimatedHeight(i);
+                        var itemHeight = _panel._children.GetEstimatedHeight(i);
                         totalHeight += itemHeight;
                         if (lastItemIndex < 0 && totalHeight > reverseScrollOffset)
                         {
@@ -347,6 +349,12 @@ namespace SmoothScroller
 
                 return totalHeight;
             }
+        }
+
+        public bool     AutoScrollOnNewItem
+        {
+            get { return (bool)GetValue(AutoScrollOnNewItemProperty); }
+            set { SetValue(AutoScrollOnNewItemProperty, value); }
         }
     }
 }

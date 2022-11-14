@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using Avalonia.Media;
+using Avalonia.Threading;
 using SmoothScroller.Views;
 
 namespace SmoothScroller.ViewModels
@@ -25,11 +26,11 @@ sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, 
 qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt,
 ut labore et dolore magnam aliquam quaerat voluptatem.";
 
-            Random _rnd = new Random(0);
+            var _rnd = new Random(0);
 
             var items = new ObservableCollection<ViewModelBase>();
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 if (i % 10 == 0)
                 {
@@ -41,7 +42,7 @@ ut labore et dolore magnam aliquam quaerat voluptatem.";
                 // Add two very big items
                 if (i == count - 2 || i == count / 2)
                 {
-                    for (int j = 0; j < 200; j++)
+                    for (var j = 0; j < 200; j++)
                     {
                         text += "\r\nLine " + j;
                     }
@@ -53,10 +54,41 @@ ut labore et dolore magnam aliquam quaerat voluptatem.";
                     (byte)(240 - _rnd.Next(50)),
                     (byte)(240 - _rnd.Next(50)));
 
+                
+                
+                
                 items.Add(new FooViewModel(text, color));
             }
 
+            testcount = items.Count;
+
+            DispatcherTimer.Run(() =>
+            {
+                 
+                    items.Add(new BarViewModel("Section " + (testcount++  / 10 + 1)));
+        
+
+                var text = LoremIpsumText.Substring(0, _rnd.Next(LoremIpsumText.Length));
+ 
+                    for (var j = 0; j < 2; j++)
+                    {
+                        text += "\r\nLine " + j;
+                    } 
+
+                var color = Color.FromArgb(
+                    255,
+                    (byte)(240 - _rnd.Next(50)),
+                    (byte)(240 - _rnd.Next(50)),
+                    (byte)(240 - _rnd.Next(50)));
+
+                items.RemoveAt(0);
+                items.Add(new FooViewModel(text, color));
+                return true;
+            }, TimeSpan.FromSeconds(1));
+            
             return items;
         }
+
+        private int testcount;
     }
 }

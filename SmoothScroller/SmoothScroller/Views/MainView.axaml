@@ -13,11 +13,9 @@
         <viewModels:MainViewModel />
     </Design.DataContext>
 
-    <ItemsControl Items="{Binding Items}">
-        <ItemsControl.Template>
-            <ControlTemplate>
-                <ScrollViewer>
-                    <controls:SmoothPanel>
+  
+                <ScrollViewer >
+                    <controls:SmoothPanel Items="{Binding Items}" AutoScrollOnNewItem="True">
                         <controls:SmoothPanel.Templates>
                             <controls:SmoothPanelTemplate ViewModel="{x:Type views:FooViewModel}"
                                                           View="{x:Type views:FooView}" />
@@ -25,8 +23,5 @@
                                                           View="{x:Type views:BarView}" />
                         </controls:SmoothPanel.Templates>
                     </controls:SmoothPanel>
-                </ScrollViewer>
-            </ControlTemplate>
-        </ItemsControl.Template>
-    </ItemsControl>
+                </ScrollViewer> 
 </UserControl>

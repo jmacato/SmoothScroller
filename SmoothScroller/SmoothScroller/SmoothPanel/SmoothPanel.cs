@@ -8,9 +8,11 @@
 // --------------------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -27,9 +29,9 @@ namespace SmoothScroller
     {
         static SmoothPanel()
         {
-            AffectsRender<SmoothPanel>( BoundsProperty);
+            AffectsRender<SmoothPanel>(BoundsProperty);
         }
-        
+
         /// <summary>
         /// The line scroll value
         /// </summary>
@@ -88,8 +90,37 @@ namespace SmoothScroller
         {
             _children = new SmoothPanelChildren(this);
             _measurer = new SmoothPanelMeasurer(this);
+        }
 
-            Templates.CollectionChanged += (sender, args) => TemplatesOnCollectionChanged();
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            if (change.Property == TemplatesProperty)
+            {
+                if (change.NewValue is ObservableCollection<SmoothPanelTemplate> newCol)
+                {
+                    newCol.CollectionChanged += (sender, args) => TemplatesOnCollectionChanged();
+                }
+            }
+
+            if (change.Property == ItemsProperty)
+            {
+                if (change.NewValue is INotifyCollectionChanged newList)
+                {
+                    newList.CollectionChanged += (sender, args) => ItemsOnCollectionChanged();
+                }
+            }
+
+            base.OnPropertyChanged(change);
+        }
+
+        private void ItemsOnCollectionChanged()
+        {
+            InvalidateArrange();
+
+            if (AutoScrollOnNewItem)
+            {
+                ScrollIntoView( Math.Max(0, _children.GetItems().Count - 1));
+            }
         }
 
         private void TemplatesOnCollectionChanged()
@@ -105,12 +136,12 @@ namespace SmoothScroller
         {
             ScrollIntoView(itemIndex, null);
         }
-        
+
         protected internal virtual void BringIndexIntoView(int index)
         {
             ScrollIntoView(index, null);
         }
- 
+
         /// <summary>
         /// Causes the item to scroll into view.
         /// </summary>
@@ -120,7 +151,17 @@ namespace SmoothScroller
         {
             var items = _children.GetItems();
 
-            if (items is {  } || itemIndex < 0 || itemIndex >= items.Count)
+            if (items is not { })
+            {
+                return;
+            }
+
+            if (itemIndex < 0)
+            {
+                return;
+            }
+
+            if (itemIndex >= items.Count)
             {
                 return;
             }
@@ -157,8 +198,8 @@ namespace SmoothScroller
                 }
             }
         }
-        
-        
+
+
         /// <summary>
         /// Sets the vertical offset.
         /// </summary>
@@ -179,9 +220,9 @@ namespace SmoothScroller
             if (Math.Abs(offset - _scrollOffset) > double.Epsilon)
             {
                 _scrollOffset = offset;
- 
+
                 ScrollInvalidated?.Invoke(this, EventArgs.Empty);
- 
+
                 if (invalidateMeasure)
                 {
                     // First item should be found by new scroll position
@@ -193,6 +234,9 @@ namespace SmoothScroller
 
         private bool isMeasureArrangeHappening = false;
         private readonly SmoothPanelMeasurer _measurer;
+
+        public static readonly StyledProperty<INotifyCollectionChanged> ItemsProperty =
+            AvaloniaProperty.Register<SmoothPanel, INotifyCollectionChanged>("Items");
 
         /// <summary>
         /// When overridden in a derived class, measures the size in layout required for child elements and
@@ -206,13 +250,13 @@ namespace SmoothScroller
         {
             if (double.IsInfinity(availableSize.Width))
             {
-                Debug.Assert(false, "Infinite width is not supported");
+                Debug.WriteLine(false, "Infinite width is not supported, reverting to 100px height.");
                 availableSize = new Size(100, availableSize.Height);
             }
 
             if (double.IsInfinity(availableSize.Height))
             {
-                Debug.Assert(false, "Infinite height is not supported");
+                Debug.WriteLine(false, "Infinite height is not supported, reverting to 100px width.");
                 availableSize = new Size(availableSize.Width, 100);
             }
 
@@ -241,9 +285,9 @@ namespace SmoothScroller
                 return finalSize;
             }
 
-            double width = finalSize.Width;
+            var width = finalSize.Width;
             double top = 0;
-            bool isFirst = true;
+            var isFirst = true;
 
             if (_firstItemIndex < 0)
             {
@@ -252,41 +296,34 @@ namespace SmoothScroller
                 SetVerticalOffset(0, false);
             }
 
-            for (int index = _firstItemIndex; index < _children.ItemsCount; index++)
+            for (var index = _firstItemIndex; index < _children.ItemsCount; index++)
             {
-                Control? element = _children.GetElement(index);
+                var element = _children.GetElement(index);
 
-                if (element is not null)
+
+                if (element is null) break;
+
+                var height = element.DesiredSize.Height;
+
+                if (isFirst)
                 {
-                    double height = element.DesiredSize.Height;
+                    // First visible item can be clipped
+                    top = -height * _firstItemClippedRatio;
+                    isFirst = false;
+                }
 
-                    if (isFirst)
-                    {
-                        // First visible item can be clipped
-                        top = -height * _firstItemClippedRatio;
-                        isFirst = false;
-                    }
+                element.Arrange(new Rect(0, top, width, height));
 
-                    element.Arrange(new Rect(0, top, width, height));
+                top += height;
 
-                    top += height;
-
-                    if (top >= finalSize.Height)
-                    {
-                        // Out of view
-                        break;
-                    }
+                if (top >= finalSize.Height)
+                {
+                    // Out of view
+                    break;
                 }
             }
 
             return finalSize;
-        }
-
-        protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            
-            // InvalidateMeasure();
-            base.ChildrenChanged(sender, e);
         }
 
         /// <summary>
@@ -313,13 +350,13 @@ namespace SmoothScroller
             {
                 _scrollExtent = newScrollExtent;
                 _scrollViewport = newScrollViewport;
-                double maxOffset = _scrollExtent.Height - _scrollViewport.Height;
+                var maxOffset = _scrollExtent.Height - _scrollViewport.Height;
                 _scrollOffset = Math.Max(0, Math.Min(_scrollOffset, maxOffset));
                 ScrollInvalidated?.Invoke(this, EventArgs.Empty);
             }
         }
-        
-        
+
+
         /// <summary>
         /// Forces content to scroll until the coordinate space of a <see cref="T:System.Windows.Media.Visual" /> object is visible.
         /// </summary>
@@ -349,29 +386,25 @@ namespace SmoothScroller
 
         public IControl? GetControlInDirection(NavigationDirection direction, IControl? from)
         {
-            return null; 
+            return null;
         }
 
         public void RaiseScrollInvalidated(EventArgs e)
-        { 
+        {
         }
 
         public bool CanHorizontallyScroll
         {
             get => false;
-            set
-            {
-            }
+            set { }
         }
 
-        public bool CanVerticallyScroll 
+        public bool CanVerticallyScroll
         {
             get => true;
-            set
-            {
-            }
+            set { }
         }
-        
+
         public bool IsLogicalScrollEnabled => true;
 
         public Size ScrollSize => new Size(_scrollExtent.Width, LineScrollValue);
@@ -379,7 +412,7 @@ namespace SmoothScroller
         public Size PageScrollSize => new Size(_scrollExtent.Width, WheelScrollValue);
 
         public event EventHandler? ScrollInvalidated;
-        
+
         public Size Extent => _scrollExtent;
 
         public Vector Offset
@@ -389,5 +422,11 @@ namespace SmoothScroller
         }
 
         public Size Viewport => _scrollViewport;
+
+        public INotifyCollectionChanged Items
+        {
+            get => GetValue(ItemsProperty);
+            set { SetValue(ItemsProperty, value); }
+        }
     }
 }

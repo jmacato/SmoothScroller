@@ -42,7 +42,7 @@ namespace SmoothScroller
             /// <summary>
             /// The array contains created elements or <c>null</c>.
             /// </summary>
-            private Control[] _elementsByIndex = new Control[0];
+            private Dictionary<int, Control?> _elementsByIndex = new();
 
             /// <summary>
             /// The collection of element caches.
@@ -81,21 +81,16 @@ namespace SmoothScroller
             /// A <see cref="Controls"/> of child elements.
             /// </value>
             private Avalonia.Controls.Controls Children => _panel.Children;
-            
+
             /// <summary>
             /// Gets the element.
             /// </summary>
             /// <param name="index">The index.</param>
             /// <returns>A <see cref="Control"/> or <c>null</c>.</returns>
-            public Control GetElement(int index)
+            public Control? GetElement(int index)
             {
-                if (index < 0 || index >= _elementsByIndex.Length)
-                {
-                    Debug.Assert(false, "Element is out of range");
-                    return null;
-                }
-
-                return _elementsByIndex[index];
+                return !_elementsByIndex.ContainsKey(index) ?
+                    null : _elementsByIndex[index];
             }
 
             /// <summary>
@@ -138,18 +133,13 @@ namespace SmoothScroller
 
                 foreach (var element in _elementsByIndex)
                 {
-                    if (element != null)
-                    {
-                        // Return elements to cache
-                        var viewCache = GetViewCache(element.DataContext);
-                        if (viewCache != null)
-                        {
-                            viewCache.ReturnElement(element);
-                        }
-                    }
+                    if (element.Value is not { DataContext: { } }) continue;
+                    // Return elements to cache
+                    var viewCache = GetViewCache(element.Value.DataContext);
+                    viewCache.ReturnElement(element.Value);
                 }
 
-                _elementsByIndex = new Control[_items != null ? _items.Count : 0];
+                _elementsByIndex = new();
                 _topmostElementsCount = 0;
             }
 
@@ -162,22 +152,26 @@ namespace SmoothScroller
             public Control GetMeasuredChild(System.Collections.IList items, int index)
             {
                 Control element = null;
-                element = _elementsByIndex[index];
-                if (element == null)
+
+                var entered = false;
+                if (!_elementsByIndex.ContainsKey(index) || _elementsByIndex[index] is null)
                 {
+                    entered = true;
                     // Get or create element from cache
                     var item = items[index];
                     var viewCache = GetViewCache(item);
                     element = viewCache.GetElement();
                     element.DataContext = item;
-                    Control s = element;
-                    _elementsByIndex[index] = (Control)element;
+                    _elementsByIndex[index] = element;
                 }
+
+                element = _elementsByIndex[index];
+                
 
                 if (!Children.Contains(element))
                 {
                     // Determine index to insert in Children collection.
-                    int visualElementIndex = Children.Count;
+                    var visualElementIndex = Children.Count;
                     var lastCreatedIndex = GetItemIndex(items, visualElementIndex - 1);
 
                     if (index < lastCreatedIndex)
@@ -208,12 +202,9 @@ namespace SmoothScroller
             public System.Collections.IList GetItems()
             {
                 System.Collections.IList items = null;
-                
-                if (_panel.GetVisualAncestors().First(x => x is ItemsControl) is ItemsControl itemsControl)
-                {
-                    items = itemsControl.Items as IList;
-                }
-                
+
+                items = _panel.Items as IList;
+
                 // Reset items if items collection replaced.
                 if (_items != items)
                 {
@@ -235,7 +226,7 @@ namespace SmoothScroller
                 _topmostElementsCount = 0;
 
                 // Get first items until them fitted in available area
-                for (int i = 0; i < items.Count; i++)
+                for (var i = 0; i < items.Count; i++)
                 {
                     var child = GetMeasuredChild(items, i);
                     _topmostElementsCount++;
@@ -254,16 +245,19 @@ namespace SmoothScroller
             /// <param name="lastVisibleIndex">The last visible item index.</param>
             public void TrimElements(int firstVisibleIndex, int lastVisibleIndex)
             {
-                for (int itemIndex = 0; itemIndex < _elementsByIndex.Length; itemIndex++)
+                for (var itemIndex = 0; itemIndex < _elementsByIndex.Count; itemIndex++)
                 {
-                    var element = _elementsByIndex[itemIndex];
-
+                    if (!_elementsByIndex.TryGetValue(itemIndex, out var element))
+                    {
+                        continue;
+                    }
+ 
                     if (element != null)
                     {
                         if (itemIndex < firstVisibleIndex || itemIndex > lastVisibleIndex)
                         {
                             // Do not delete topmost elements.
-                            bool deleteControl = itemIndex >= _topmostElementsCount;
+                            var deleteControl = itemIndex >= _topmostElementsCount;
                             if (deleteControl)
                             {
                                 _elementsByIndex[itemIndex] = null;
@@ -272,7 +266,6 @@ namespace SmoothScroller
                                 {
                                     Children.RemoveRange(itemIndex, 1);
                                 }
-
                             }
 
                             // Remove all odd children
@@ -335,7 +328,7 @@ namespace SmoothScroller
                     return null;
                 }
 
-                Type viewModelType = viewModel.GetType();
+                var viewModelType = viewModel.GetType();
 
                 if (_viewModelToView == null)
                 {

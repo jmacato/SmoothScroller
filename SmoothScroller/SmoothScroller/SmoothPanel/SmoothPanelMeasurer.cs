@@ -150,7 +150,7 @@ namespace SmoothScroller
 
                     if (FirstItemIndex < 0)
                     {
-                        Debug.Assert(false, "First visible item should be determined");
+                        Debug.WriteLine( "First visible item should be determined");
 
                         // Some unexpected result - just reset to top.
                         _panel.SetFirstVisibleItem(0, 0);
@@ -217,7 +217,7 @@ namespace SmoothScroller
 
                     // Recalculate positions if scroll changed.
                     lastChance = !lastChance;
-                    Debug.Assert(lastChance, "SmoothPanel measuring failed.");
+                    Debug.WriteLine(lastChance, "SmoothPanel measuring failed.");
                 }
                 while (lastChance);
 
@@ -343,7 +343,7 @@ namespace SmoothScroller
                         break;
                     }
                     lastChance = !lastChance;
-                    Debug.Assert(lastChance, "Total height is not determined.");
+                    Debug.WriteLine(lastChance, "Total height is not determined.");
                 }
                 while (lastChance);
 

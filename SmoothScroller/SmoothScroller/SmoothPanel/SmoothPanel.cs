@@ -106,21 +106,30 @@ namespace SmoothScroller
             {
                 if (change.NewValue is INotifyCollectionChanged newList)
                 {
-                    newList.CollectionChanged += (sender, args) => ItemsOnCollectionChanged();
+                    newList.CollectionChanged += ItemsOnCollectionChanged;
                 }
             }
 
             base.OnPropertyChanged(change);
         }
 
-        private void ItemsOnCollectionChanged()
+        private void ItemsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            InvalidateArrange();
 
-            if (AutoScrollOnNewItem)
+            if ( e.Action != NotifyCollectionChangedAction.Add)
+            {
+                _children.ResetItems();
+                InvalidateArrange();
+            }
+            
+            if (AutoScrollOnNewItem && e.Action == NotifyCollectionChangedAction.Add)
             {
                 ScrollIntoView( Math.Max(0, _children.GetItems().Count - 1));
-            }
+                InvalidateArrange();
+            } 
+            
+            InvalidateArrange();
+
         }
 
         private void TemplatesOnCollectionChanged()

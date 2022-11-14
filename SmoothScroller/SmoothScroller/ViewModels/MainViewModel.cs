@@ -11,8 +11,11 @@ namespace SmoothScroller.ViewModels
     {
         public MainViewModel()
         {
-            Items = GetTestItems(5000);
+            Items = GetTestItems(2);
         }
+
+        Random _rnd = new Random(0);
+
 
         public IEnumerable Items { get; }
 
@@ -26,7 +29,6 @@ sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, 
 qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt,
 ut labore et dolore magnam aliquam quaerat voluptatem.";
 
-            var _rnd = new Random(0);
 
             var items = new ObservableCollection<ViewModelBase>();
 
@@ -54,9 +56,7 @@ ut labore et dolore magnam aliquam quaerat voluptatem.";
                     (byte)(240 - _rnd.Next(50)),
                     (byte)(240 - _rnd.Next(50)));
 
-                
-                
-                
+
                 items.Add(new FooViewModel(text, color));
             }
 
@@ -64,16 +64,15 @@ ut labore et dolore magnam aliquam quaerat voluptatem.";
 
             DispatcherTimer.Run(() =>
             {
-                 
-                    items.Add(new BarViewModel("Section " + (testcount++  / 10 + 1)));
-        
+                items.Add(new BarViewModel("Section " + (testcount++ / 10 + 1)));
+
 
                 var text = LoremIpsumText.Substring(0, _rnd.Next(LoremIpsumText.Length));
- 
-                    for (var j = 0; j < 2; j++)
-                    {
-                        text += "\r\nLine " + j;
-                    } 
+
+                for (var j = 0; j < 2; j++)
+                {
+                    text += "\r\nLine " + j;
+                }
 
                 var color = Color.FromArgb(
                     255,
@@ -81,11 +80,11 @@ ut labore et dolore magnam aliquam quaerat voluptatem.";
                     (byte)(240 - _rnd.Next(50)),
                     (byte)(240 - _rnd.Next(50)));
 
-                items.RemoveAt(0);
+                items.Remove(items[0]);
                 items.Add(new FooViewModel(text, color));
                 return true;
-            }, TimeSpan.FromSeconds(1));
-            
+            }, TimeSpan.FromSeconds(5));
+
             return items;
         }
 
